@@ -1,0 +1,11 @@
+smart_crop_advisor/
+├── app.py
+├── requirements.txt
+├── README.md
+├── PROJECT_STRUCTURE.txt
+├── smart_crop.db        (created automatically after first run)
+├── templates/
+│   └── index.html
+└── static/
+    ├── app.js
+    └── style.css

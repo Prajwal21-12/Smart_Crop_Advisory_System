@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Crop Advisory System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f8f3;
+            color: #1f2937;
+        }
+
+        header {
+            background: #166534;
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 30px;
+        }
+
+        header p {
+            margin: 8px 0 0;
+            opacity: 0.9;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 25px auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            color: #166534;
+            margin-top: 0;
+        }
+
+        h3 {
+            color: #166534;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+            background: white;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #16a34a;
+        }
+
+        button {
+            border: none;
+            border-radius: 9px;
+            padding: 13px 20px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 18px;
+        }
+
+        .primary {
+            background: #16a34a;
+            color: white;
+        }
+
+        .primary:hover {
+            background: #15803d;
+        }
+
+        .secondary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .secondary:hover {
+            background: #1d4ed8;
+        }
+
+        .results {
+            margin-top: 20px;
+        }
+
+        .crop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .crop-card {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .crop-card h3 {
+            margin-top: 0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .info-box {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 18px;
+            border-left: 5px solid #16a34a;
+        }
+
+        .info-box h3 {
+            margin-top: 0;
+        }
+
+        .action-section {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 14px;
+            border-left: 5px solid #16a34a;
+        }
+
+        .action-section h3 {
+            margin-top: 0;
+        }
+
+        .muted {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #diseaseResult {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0fdf4;
+            border-radius: 12px;
+            border: 1px solid #bbf7d0;
+        }
+
+        #diseaseMsg {
+            margin-top: 12px;
+            font-weight: bold;
+        }
+
+        .language-box {
+            max-width: 250px;
+        }
+
+        .top-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 24px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+        /* ============================================================
+        SMART FARM ACTION PLAN
+        ============================================================ */
+
+        .action-item {
+            background: #ffffff;
+            border-left: 5px solid #168a45;
+            border-radius: 12px;
+            padding: 18px 22px;
+            margin: 14px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .action-item h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .action-item p {
+            margin: 6px 0;
+            line-height: 1.6;
+        }
+
+        .action-item ol {
+            margin-top: 8px;
+            padding-left: 25px;
+        }
+
+        .action-item li {
+            margin: 5px 0;
+            line-height: 1.5;
+        }
+
+        .action-footer {
+            margin-top: 18px;
+            font-size: 13px;
+            opacity: 0.75;
+        }
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+</head>
+
+<body>
+
+<header>
+    <h1>🌱 Smart Crop Advisory System</h1>
+    <p>AI-powered decision support for small and marginal farmers</p>
+</header>
+
+<div class="container">
+
+    <!-- LANGUAGE -->
+    <div class="top-actions">
+        <div class="form-group language-box">
+            <label for="language">Language</label>
+
+            <select id="language" onchange="changeLanguage()">
+                <option value="English">English</option>
+                <option value="Kannada">ಕನ್ನಡ</option>
+                <option value="Hindi">हिन्दी</option>
+            </select>
+        </div>
+    </div>
+
+    </div>
+
+    <!-- ==============================
+         SMART FARMING DASHBOARD
+         ============================== -->
+
+    <section class="dashboard-section">
+        <div class="system-status">
+
+            <h3 id="systemStatusTitle">🟢 System Status: Online</h3>
+
+            <div class="status-items">
+
+                <span id="liveWeatherStatus">🌦️ Live Weather</span>
+                <span id="cropAIStatus">🤖 Crop AI</span>
+                <span id="diseaseAIStatus">🦠 Disease AI</span>
+                <span id="databaseStatus">💾 Database</span>
+
+            </div>
+
+        </div>
+
+        <div class="dashboard-header">
+            <h2 id="dashboardTitle">📊 Smart Farming Dashboard</h2>
+            <p id="dashboardSubtitle">Recent crop recommendation history</p>
+        </div>
+
+        <div class="dashboard-stats">
+
+            <div class="dashboard-card">
+                <div class="dashboard-icon">🌱</div>
+                <div>
+                    <h3 id="totalRecommendations">0</h3>
+                    <p id="totalRecommendationsLabel">Total Recommendations</p>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="dashboard-icon">🌾</div>
+                <div>
+                    <h3 id="latestCrop">—</h3>
+                    <p id="latestCropLabel">Latest Recommended Crop</p>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="dashboard-icon">👨‍🌾</div>
+                <div>
+                    <h3 id="latestFarmer">—</h3>
+                    <p id="latestFarmerLabel">Latest Farmer</p>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="dashboard-icon">📍</div>
+                <div>
+                    <h3 id="latestLocation">—</h3>
+                    <p id="latestLocationLabel">Latest Location</p>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="dashboard-icon">🌦️</div>
+                    <div>
+                        <h3 id="latestWeather">—</h3>
+                        <p id="latestWeatherLabel">Latest Weather</p>
+                    </div>
+            </div>
+        </div>
+
+        <div class="dashboard-history">
+
+            <button
+                type="button"
+                id="refreshHistoryBtn"
+                class="refresh-history-btn"
+                onclick="refreshRecommendationHistory()">
+                🔄 Refresh History
+            </button>
+
+            <!-- Latest Recommendation Summary -->
+            <div class="latest-recommendation">
+
+                <h3 id="latestRecommendationTitle">🌾 Latest Crop Recommendation</h3>
+
+                <div class="recommendation-summary-content">
+
+                    <div>
+                        <span class="summary-label">Recommended Crop</span>
+                        <strong id="summaryCrop">—</strong>
+                    </div>
+
+                    <div>
+                        <span class="summary-label">AI Confidence</span>
+                        <strong id="summaryConfidence">—</strong>
+                    </div>
+
+                    <div>
+                        <span class="summary-label">Rain Chance</span>
+                        <strong id="summaryRain">—</strong>
+                    </div>
+
+                </div>
+
+            </div>
+            <h3 id="recentRecommendationsTitle">📋 Recent Recommendations</h3>
+
+            <div id="historyTableContainer">
+                <p class="history-loading">
+                    Loading recommendation history...
+                </p>
+            </div>
+
+        </div>
+        <div class="crop-statistics">
+
+        <h3 id="cropStatisticsTitle">📊 Crop Recommendation Statistics</h3>
+
+        <div id="cropStatistics">
+            <p class="history-loading">
+                Loading crop statistics...
+            </p>
+        </div>
+
+    </div>
+
+    </section>
+
+
+
+
+    <!-- 1. FARMER PROFILE -->
+    <section class="card">
+
+        <h2 id="farmerProfileTitle">
+            1. Farmer & Farm Profile
+        </h2>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Enter farmer name"
+                >
+            </div>
+
+            <div class="form-group">
+
+                <label for="location">
+                    Location
+                </label>
+
+                <!-- FIXED LOCATION DROPDOWN -->
+                <select id="location" name="location" required>
+
+                    <option value="">
+                        Select your location
+                    </option>
+
+                    <option value="Bengaluru">
+                        Bengaluru
+                    </option>
+
+                    <option value="Mysuru">
+                        Mysuru
+                    </option>
+
+                    <option value="Mangaluru">
+                        Mangaluru
+                    </option>
+
+                    <option value="Hubballi">
+                        Hubballi
+                    </option>
+
+                    <option value="Belagavi">
+                        Belagavi
+                    </option>
+
+                    <option value="Shivamogga">
+                        Shivamogga
+                    </option>
+
+                    <option value="Tumakuru">
+                        Tumakuru
+                    </option>
+
+                    <option value="Davangere">
+                        Davangere
+                    </option>
+
+                    <option value="Ballari">
+                        Ballari
+                    </option>
+
+                    <option value="Raichur">
+                        Raichur
+                    </option>
+
+                    <option value="Hassan">
+                        Hassan
+                    </option>
+
+                    <option value="Mandya">
+                        Mandya
+                    </option>
+
+                    <option value="Kolar">
+                        Kolar
+                    </option>
+
+                    <option value="Chitradurga">
+                        Chitradurga
+                    </option>
+
+                    <option value="Bidar">
+                        Bidar
+                    </option>
+
+                    <option value="Kalaburagi">
+                        Kalaburagi
+                    </option>
+
+                    <option value="Vijayapura">
+                        Vijayapura
+                    </option>
+
+                    <option value="New Delhi">
+                        New Delhi
+                    </option>
+
+                    <option value="Mumbai">
+                        Mumbai
+                    </option>
+
+                    <option value="Hyderabad">
+                        Hyderabad
+                    </option>
+
+                    <option value="Chennai">
+                        Chennai
+                    </option>
+
+                    <option value="Pune">
+                        Pune
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="landArea">
+                    Land area (acres)
+                </label>
+
+                <input
+                    type="number"
+                    id="landArea"
+                    step="0.1"
+                    min="0"
+                    placeholder="Example: 2"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="soilType">
+                    Soil type
+                </label>
+
+                <select id="soilType">
+
+                    <option value="Black">
+                        Black
+                    </option>
+
+                    <option value="Red">
+                        Red
+                    </option>
+
+                    <option value="Alluvial">
+                        Alluvial
+                    </option>
+
+                    <option value="Sandy">
+                        Sandy
+                    </option>
+
+                    <option value="Loamy">
+                        Loamy
+                    </option>
+
+                    <option value="Clay">
+                        Clay
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="water">
+                    Water availability
+                </label>
+
+                <select id="water">
+
+                    <option value="Low">
+                        Low
+                    </option>
+
+                    <option value="Medium">
+                        Medium
+                    </option>
+
+                    <option value="High">
+                        High
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <button
+            class="primary"
+            onclick="saveProfile()"
+        >
+            Save farmer profile
+        </button>
+
+        <p id="profileMsg"></p>
+
+    </section>
+
+
+    <!-- 2. SOIL CONDITIONS -->
+    <section class="card">
+
+        <h2 id="soilConditionsTitle">
+            2. Soil & Field Conditions
+        </h2>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label for="nitrogen">
+                    Nitrogen (N)
+                </label>
+
+                <input
+                    type="number"
+                    id="nitrogen"
+                    value="40"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="phosphorus">
+                    Phosphorus (P)
+                </label>
+
+                <input
+                    type="number"
+                    id="phosphorus"
+                    value="40"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="potassium">
+                    Potassium (K)
+                </label>
+
+                <input
+                    type="number"
+                    id="potassium"
+                    value="40"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="soilPH">
+                    Soil pH
+                </label>
+
+                <input
+                    type="number"
+                    id="soilPH"
+                    value="6.5"
+                    step="0.1"
+                    min="0"
+                    max="14"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="moisture">
+                    Soil moisture (%)
+                </label>
+
+                <input
+                    type="number"
+                    id="moisture"
+                    value="45"
+                    min="0"
+                    max="100"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="rainfall">
+                    Expected rainfall (mm)
+                </label>
+
+                <input
+                    type="number"
+                    id="rainfall"
+                    value="100"
+                    min="0"
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="temperature">
+                    Temperature (°C)
+                </label>
+
+                <input
+                    type="number"
+                    id="temperature"
+                    value="25"
+                    step="0.1"
+                >
+
+            </div>
+
+        </div>
+
+        <button
+            id="recommendBtn"
+            type="button"
+            onclick="recommend()">
+            🌱 Get Smart Recommendation
+        </button>
+
+    </section>
+
+
+    <!-- RESULTS -->
+    <section id="results" class="results hidden">
+        <div class="report-actions">
+            <button type="button" id="printReportBtn">
+            🖨️ Print / Save Report
+            </button>
+        </div>
+
+        <!-- 3. CROP RECOMMENDATION -->
+        <div class="card">
+
+            <h2 id="cropRecommendationTitle">
+                3. AI Crop Recommendation
+            </h2>
+
+            <div
+                id="cropCards"
+                class="crop-grid"
+            ></div>
+
+            <p class="muted">
+                Powered by Random Forest ML • Test Accuracy: 99.32%
+            </p>
+
+        </div>
+
+
+        <!-- WEATHER -->
+        <div class="card">
+
+            <h2>
+                🌦️ Weather
+            </h2>
+
+            <div
+                id="weather"
+                class="info-grid"
+            >
+
+                <div class="info-box">
+                    <h3>Current Weather</h3>
+                    <p>
+                        Weather information will appear here.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- IRRIGATION -->
+        <div class="card">
+
+            <h2>
+                💧 Irrigation
+            </h2>
+
+            <div
+                id="irrigation"
+                class="info-box"
+            >
+                Irrigation recommendation will appear here.
+            </div>
+
+        </div>
+
+
+        <!-- NUTRIENTS -->
+        <div class="card">
+
+            <h2>
+                🧪 Nutrient Advisory
+            </h2>
+
+            <div
+                id="fert"
+                class="info-box"
+            >
+                Nutrient recommendation will appear here.
+            </div>
+
+        </div>
+
+
+        <!-- ALERTS -->
+        <div class="card">
+
+            <h2>
+                ⚠️ Alerts
+            </h2>
+
+            <div
+                id="alerts"
+                class="info-box"
+            >
+                No major alerts.
+            </div>
+
+        </div>
+
+
+        <!-- 4. PLANT DISEASE AI -->
+        <div class="card">
+
+            <h2 id="diseaseAITitle">
+                4. Plant Disease AI 🌿🤖
+            </h2>
+
+            <p>
+                Upload a clear image of a plant leaf for AI-based
+                disease analysis.
+            </p>
+
+            <input
+                type="file"
+                id="leaf"
+                accept="image/*"
+            >
+
+            <button
+                class="secondary"
+                onclick="uploadLeaf()"
+            >
+                🔍 Analyze Leaf Image
+            </button>
+
+            <p
+                id="diseaseMsg"
+            ></p>
+
+
+            <div id="diseaseResult" class="hidden">
+
+                <h3>AI Diagnosis</h3>
+
+                <p>
+                    <strong>Disease:</strong>
+                    <span id="diseaseName"></span>
+                </p>
+
+                <p>
+                    <strong>Confidence:</strong>
+                    <span id="diseaseConfidence"></span>
+                </p>
+
+                <div class="confidence-container">
+                    <div class="confidence-bar">
+                        <div id="confidenceFill" class="confidence-fill"></div>
+                    </div>
+                </div>
+
+                <p>
+                    <strong>AI Confidence Level:</strong>
+                    <span id="diseaseConfidenceLevel">-</span>
+                </p>
+
+                <p>
+                    <strong>Treatment:</strong>
+                    <span id="diseaseTreatment"></span>
+                </p>
+
+                <p>
+                    <strong>Prevention:</strong>
+                    <span id="diseasePrevention"></span>
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- 5. SMART FARM ACTION PLAN -->
+        <div class="card action-plan-card">
+
+            <h2 id="actionPlanTitle">
+                5. Smart Farm Action Plan 🚜
+            </h2>
+
+            <div id="actionPlan">
+
+                <p class="muted">
+                    Complete the crop recommendation and disease
+                    analysis to generate a practical farm action plan.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<footer>
+    Smart Crop Advisory System • AI + ML + Live Weather + Plant Disease Detection
+</footer>
+
+
+<!-- YOUR EXISTING JAVASCRIPT -->
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+
+</body>
+</html>

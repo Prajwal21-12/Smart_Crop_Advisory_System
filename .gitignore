@@ -1,0 +1,12 @@
+.venv/
+.venv_disease/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.vscode/
+.env
+*.db
+*.sqlite
+*.sqlite3
+uploads/

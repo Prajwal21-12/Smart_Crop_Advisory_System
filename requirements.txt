@@ -1,0 +1,9 @@
+Flask>=3.0,<4.0
+pandas
+scikit-learn
+joblib
+requests
+Pillow
+numpy
+tensorflow==2.20.0
+gunicorn
