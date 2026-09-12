@@ -1400,7 +1400,7 @@ def save_farmer():
             land_area = 0
 
         # Save to database
-        conn = sqlite3.connect(DB)
+        conn = sqlite3.connect(DATABASE_PATH)
         cursor = conn.cursor()
 
         cursor.execute("""
