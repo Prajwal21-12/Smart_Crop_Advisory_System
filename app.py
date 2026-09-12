@@ -41,7 +41,7 @@ DISEASE_CLASSES_PATH = os.path.join(
     "plant_disease_classes.json"
 )
 
-UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
+UPLOAD_FOLDER = "/tmp/uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
