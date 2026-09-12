@@ -1718,52 +1718,6 @@ def file_too_large(error):
 # ============================================================
 # START SERVER
 # ============================================================
-@app.route("/api/recommendation-history", methods=["GET"])
-def recommendation_history():
-    try:
-        connection = sqlite3.connect(DATABASE_PATH)
-        connection.row_factory = sqlite3.Row
-        cursor = connection.cursor()
-
-        cursor.execute("""
-            SELECT
-                id,
-                farmer_name,
-                location,
-                recommended_crop,
-                confidence,
-                nitrogen,
-                phosphorus,
-                potassium,
-                soil_ph,
-                soil_moisture,
-                rainfall,
-                temperature,
-                weather_rain_chance,
-                created_at
-            FROM recommendation_history
-            ORDER BY id DESC
-            LIMIT 10
-        """)
-
-        rows = cursor.fetchall()
-        connection.close()
-
-        history = [dict(row) for row in rows]
-
-        return jsonify({
-            "success": True,
-            "history": history
-        })
-
-    except Exception as e:
-        print("Recommendation history error:", e)
-
-        return jsonify({
-            "success": False,
-            "error": str(e),
-            "history": []
-        }), 500
 
 if __name__ == "__main__":
 
