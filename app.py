@@ -32,7 +32,7 @@ app = Flask(__name__)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 MODEL_DIR = os.path.join(BASE_DIR, "model")
-DATABASE_PATH = os.path.join(BASE_DIR, "farmers.db")
+DATABASE_PATH = os.path.join("/tmp", "smart_crop.db")
 
 CROP_MODEL_PATH = os.path.join(MODEL_DIR, "crop_model.pkl")
 DISEASE_MODEL_PATH = os.path.join(MODEL_DIR, "plant_disease_model.keras")
