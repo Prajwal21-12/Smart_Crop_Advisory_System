@@ -1,3 +1,9 @@
+# Smart Crop Advisory System
+
+## 🌐 Live Website
+
+https://smart-crop-advisory-system-hl25dy3fp-match-mind-ai.vercel.app
+
 # Smart Crop Advisory System for Small and Marginal Farmers
 
 ## What is included
